@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <h1>Registration form</h1>
+    <div id="card">
+
+        <div id="card_row">
+
+            <form method="post" id="sub">
+
+                <div class="input_field">
+                    <div><label for="fname">*First Name</label></div>
+                    <div><input name="first_name" id="fname" class="input"></div>
+                </div>
+
+                <div class="input_field">
+                    <div><label for="lname">*Last Name</label></div>
+                    <div> <input name="last_name" id="lname" class="input"></div>
+                </div>
+
+                <div class="input_field">
+                    <div><label for="email">*Email</label></div>
+                    <div> <input name="email" id="email" class="input"></div>
+                </div>
+
+                <div class="input_field">
+                    <div><label for="gender">*gender</label></div>
+                    <div><input name="gender" id="gender" class="input"></div>
+                </div>
+
+                <div class="input_field">
+                    <div><label for="phone">*contact</label></div>
+                    <div><input name="phone" id="phone" class="input"></div>
+                </div>
+
+                <div class="input_field">
+                    <button type="submit" id="view">SUBMIT</button>
+                    <button type="button" id="get">GET</button>
+                    <button type="button" id="put">PUT</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <div>
+
+        <table id="card_row1">
+            <tr>
+              <th>First Name:</th>
+              <th>Last Name:</th>
+              <th>Email:</th>
+              <th>Gender:</th>
+              <th>phone:</th>
+              <th></th>
+            </tr>
+          </table>
+
+    </div>
+
+    <script>
+
+        function view() {
+
+            $("#sub").submit(function (e) {
+                e.preventDefault();
+                let fname = $("#fname").val();
+                let lname = $("#lname").val();
+                let email = $("#email").val();
+                let gender = $("#gender").val();
+                let phone = $("#phone").val();
+                let payload = {
+
+                    "first_name": fname,
+                    "last_name": lname,
+                    "email": email,
+                    "gender": "m",
+                    "phone": phone
+                }
+
+
+                let url_data = "http://13.126.253.245:9010/api/users/profile";
+
+                // let details_data = $(this).serialize();
+
+                $.ajax({
+
+                    url: url_data,
+                    type: "POST",
+                    data: payload,
+                    success: function (response) {
+                        Swal.fire({
+                            position:'center',
+                            icon: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        console.log(response);
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                            footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                        console.log({ error });
+                    }
+
+                });
+            });
+        }
+        $("#card_row1").hide();
+
+        $("#get").click(function () {
+
+            $("#card_row1").toggle();
+            $.ajax({
+
+                url: "http://13.126.253.245:9010/api/users/list",
+                type: "GET",
+                success: function (response) {
+                    let str = "";
+                    let del = response.data;
+                    let count=0;
+
+                    console.log("Mydayta", del)
+                    for (x of response.data) {
+
+                        if (x.status == "Active") {
+                            str +=`
+
+                         <tr class="serial_data" id="serial_${count}">
+                            <td> ${x.first_name}</td>
+                            <td> ${x.last_name}</td>
+                            <td> ${x.email}</td>
+                            <td> ${x.gender}</td>
+                            <td> ${x.phone}</td>
+                            <td><button type="submit" data-id="${x.email}" id="del_${x._id}">Delete</button></td>
+                         </tr>
+                         
+                         `
+                         count++;
+
+                            $(".serial_data").css({ "border": "1px solid black", "background-color": "white " });
+
+                            $("#card_row1").append(str);
+                        }
+
+
+                    }
+
+
+
+                }
+            });
+        });
+
+        $("#put").click(function () {
+
+            alert("updated")
+            let fname = $("#fname").val();
+            let lname = $("#lname").val();
+            let email = $("#email").val();
+            let gender = $("#gender").val();
+            let phone = $("#phone").val();
+
+            let payload = {
+
+                "first_name": fname,
+                "last_name": lname,
+                "email": email,
+                "gender": "m",
+                "phone": phone
+            }
+
+            $.ajax({
+
+                url: "http://13.126.253.245:9010/api/users/update/profile?email",
+                type: "PUT",
+                data: payload,
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log({ error });
+                }
+
+            });
+        });
+
+        $(document).on("click", "button[id^=put_]", function () {
+
+            let id = $(this).attr("data-id");
+
+            let api_url = "http://13.126.253.245:9010/api/users/update/profile?id=" + id;
+
+            alert(id);
+
+            let fname = $("#fname").val();
+
+            let lname = $("#lname").val();
+
+            let phone = $("#phone").val();
+
+            let email = $("#email").val();
+
+            let payload = {
+
+                "first_name": fname,
+
+                "last_name": lname,
+
+                "email": email,
+
+                "phone": phone,
+
+            }
+
+            $.ajax({
+
+                url: api_url,
+
+                type: "PUT",
+
+                data: payload,
+
+                success: function (item) {
+
+                    console.log("item", item);
+
+                }
+
+            })
+
+        });
+
+        $(document).on("click", "button[id^=del_]", function () {
+
+            let id = $(this).attr("data-id");
+
+            let api_url = "http://13.126.253.245:9010/api/users/profile/delete";
+
+            let ob = {
+                email: id
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                }
+            })
+            alert(id);
+
+            $.ajax({
+
+                url: api_url,
+                type: "DELETE",
+                data: ob,
+                success: function (item) {
+                    console.log("item" + item);
+                }
+            })
+        });
+
+        $(document).ready(function () {
+
+            view();
+
+
+        });
+    </script>
+</body>
+
+</html>

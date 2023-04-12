@@ -1,0 +1,48 @@
+h1{
+    text-align: center;
+}
+body{
+    background-image: url('./img.jpg');
+}
+input{
+    width: 60%;
+    padding: 1%;
+    border-radius: 2rem;
+    box-shadow: 2px 2px 8px gray;
+    margin-top: 16px;
+}
+#card_row{
+    display: flex;
+    justify-content: space-around;
+}
+#card_row1{
+     border: 1px solid black;
+     text-align: center;
+     width: 80%;
+}
+#sub{
+    border: 1px solid black;
+    background-color: white;
+    width: 50%;
+    text-align: center;
+}
+#view{
+    padding: 1%;
+    border-radius: 2rem;
+    margin-top:3%;
+}
+#get{
+    padding: 1%;
+    border-radius: 2rem;
+    margin-top:3%;
+}
+#update{
+    padding: 1%;
+    border-radius: 2rem;
+    margin-top:3%;
+}
+#put{
+    padding: 1%;
+    border-radius: 2rem;
+    margin-top:3%;
+}
